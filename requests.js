@@ -1,21 +1,21 @@
 const request = require("request");
+const urlConstructor = uri =>
+  `https://api.tfl.gov.uk${uri}?app_id=${process.env.app_id}&app_key=${process.env.app_key}`;
 
-const urlConstructor = (uri, params) => {
-  let url = `https://api.tfl.gov.uk${uri}?app_id=${process.env.app_id}&app_key=${process.env.app_key}`;
-  if (params) {
-    Object.keys(params).forEach(key => {
-      url += `&${key}=${params[key]}`;
-    });
-  }
-
-  return url;
-};
-
-const sendRequest = (uri, params) =>
-  request(urlConstructor(uri, params), (err, res, body) => {
+const sendRequest = (uri, formatter) =>
+  request(urlConstructor(uri), (err, res, body) => {
     if (err) console.log(err);
-    console.log(JSON.parse(body));
+    console.log(formatter(JSON.parse(body)));
   });
 
-exports.getModes = () => sendRequest("/Line/Meta/Modes");
-exports.getModeStatus = args => sendRequest(`/Line/Mode/${args}`);
+exports.getModes = () =>
+  sendRequest("/Line/Meta/Modes", body => body.map(({ modeName }) => modeName));
+
+exports.getModeStatus = args =>
+  sendRequest(`/Line/Mode/${args}`, body =>
+    body.map(line => ({
+      name: line.name,
+      status: line.lineStatuses,
+      disruptions: line.disruptions
+    }))
+  );
