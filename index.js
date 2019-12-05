@@ -12,4 +12,6 @@ const handler = (args, defaultFunc, otherFunc) => {
 
 if (argv.m) {
   handler(argv.m, "getModes", "getModeStatus");
+} else if (argv.l) {
+  handler(argv.l, "getLines", "getLineStatus");
 }
