@@ -18,7 +18,7 @@ exports.getModeStatus = args =>
   sendRequest(`/Line/Mode/${args}`, body =>
     body.map(({ id, name, lineStatuses, disruptions }) => ({
       name: `${name} (${id})`,
-      status: lineStatuses ? lineStatuses : "Good service",
-      disruptions: disruptions
+      status: lineStatuses.length > 0 ? lineStatuses : "Good service",
+      disruptions: disruptions.length > 0 ? disruptions : "None"
     }))
   );

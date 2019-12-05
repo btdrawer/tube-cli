@@ -1,7 +1,14 @@
+const specialFormatting = {
+  tflrail: "TfL Rail",
+  dlr: "DLR"
+};
+
 exports.formatNames = name => {
   let words = name.split("-");
   words = words.map(word =>
-    word === "tfl" ? "TfL" : word.charAt(0).toUpperCase()
+    specialFormatting[word]
+      ? specialFormatting[word]
+      : `${word.charAt(0).toUpperCase()}${word.substring(1, word.length)}`
   );
   return words.join(" ");
 };
