@@ -1,5 +1,11 @@
 const requests = require("./requests");
-const argv = require("yargs").usage("Usage: -l").argv;
+const argv = require("yargs").usage(
+  "Usage:\n\
+-m List available modes\n\
+-m [str] Status updates for a specified mode\n\
+-l [str] Status updates for specified lines\n\
+-d Disruptions (use in conjunction with -m or -l)"
+).argv;
 require("dotenv").config();
 
 const handler = (

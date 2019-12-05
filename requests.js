@@ -16,9 +16,7 @@ const sendRequest = (uri, formatter) =>
   });
 
 exports.getModeDisruptions = args =>
-  sendRequest(`/Line/Mode/${args}/Disruption`, body =>
-    disruptionFormatter(args, body)
-  );
+  sendRequest(`/Line/Mode/${args}/Disruption`, disruptionFormatter);
 
 exports.getModes = () =>
   sendRequest("/Line/Meta/Modes", body =>
@@ -29,8 +27,6 @@ exports.getModeStatus = args =>
   sendRequest(`/Line/Mode/${args}`, statusFormatter);
 
 exports.getLineDisruptions = args =>
-  sendRequest(`/Line/${args}/Disruption`, body =>
-    disruptionFormatter(args, body)
-  );
+  sendRequest(`/Line/${args}/Disruption`, disruptionFormatter);
 
 exports.getLineStatuses = args => sendRequest(`/Line/${args}`, statusFormatter);

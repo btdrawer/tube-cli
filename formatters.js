@@ -15,36 +15,16 @@ exports.statusFormatter = body =>
     disruptions: disruptions.length > 0 ? disruptions : "None"
   }));
 
-exports.disruptionFormatter = (args, body) => {
-  if (args === "national-rail") {
-    return body.map(({ type, description }) => ({
-      category: type,
-      description
-    }));
-  } else {
-    return body.map(
-      ({
-        categoryDescription,
-        description,
-        affectedRoutes,
-        affectedStops
-      }) => ({
-        category: categoryDescription,
-        description: description,
-        routes: affectedRoutesMapper(affectedRoutes),
-        stops: affectedStopsMapper(affectedStops)
-      })
-    );
-  }
-};
+exports.disruptionFormatter = body =>
+  body.map(({ description }) => {
+    let arr = description.split(": ");
+    return {
+      line: arr[0],
+      description: arr[1]
+    };
+  });
 
 const specialNamesFormatting = {
   tflrail: "TfL Rail",
   dlr: "DLR"
 };
-
-const affectedRoutesMapper = routes =>
-  routes.map(route => this.formatNames(route.name));
-
-const affectedStopsMapper = stops =>
-  stops.map(stop => `${this.formatNames(stop.fullName)} ${stop.id}`);
