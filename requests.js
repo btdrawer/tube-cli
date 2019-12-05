@@ -1,7 +1,5 @@
 const request = require("request");
-const { formatNames } = require("./helpers");
-const urlConstructor = uri =>
-  `https://api.tfl.gov.uk${uri}?app_id=${process.env.app_id}&app_key=${process.env.app_key}`;
+const { urlConstructor, formatNames } = require("./helpers");
 
 const sendRequest = (uri, formatter) =>
   request(urlConstructor(uri), (err, res, body) => {
