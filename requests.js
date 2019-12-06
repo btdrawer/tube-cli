@@ -3,7 +3,7 @@ const urlConstructor = uri =>
   `https://api.tfl.gov.uk${uri}?app_id=${process.env.app_id}&app_key=${process.env.app_key}`;
 const {
   formatNames,
-  statusFormatter,
+  listFormatter,
   disruptionFormatter
 } = require("./formatters");
 
@@ -16,7 +16,9 @@ const sendRequest = (uri, formatter) =>
   });
 
 exports.getModeDisruptions = args =>
-  sendRequest(`/Line/Mode/${args}/Disruption`, disruptionFormatter);
+  sendRequest(`/Line/Mode/${args}/Disruption`, body =>
+    disruptionFormatter(args, body)
+  );
 
 exports.getModes = () =>
   sendRequest("/Line/Meta/Modes", body =>
@@ -24,9 +26,11 @@ exports.getModes = () =>
   );
 
 exports.getModeStatus = args =>
-  sendRequest(`/Line/Mode/${args}`, statusFormatter);
+  sendRequest(`/Line/Mode/${args}`, listFormatter);
 
 exports.getLineDisruptions = args =>
-  sendRequest(`/Line/${args}/Disruption`, disruptionFormatter);
+  sendRequest(`/Line/${args}/Disruption`, body =>
+    disruptionFormatter(args, body)
+  );
 
-exports.getLineStatuses = args => sendRequest(`/Line/${args}`, statusFormatter);
+exports.getLines = args => sendRequest(`/Line/${args}`, listFormatter);

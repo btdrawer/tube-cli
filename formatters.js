@@ -8,23 +8,27 @@ exports.formatNames = name => {
   return words.join(" ");
 };
 
-exports.statusFormatter = body =>
-  body.map(({ id, name, lineStatuses, disruptions }) => ({
-    name: `${name} (${id})`,
-    status: lineStatuses.length > 0 ? lineStatuses : "Good service",
-    disruptions: disruptions.length > 0 ? disruptions : "None"
-  }));
+exports.listFormatter = body => body.map(({ id, name }) => `${name} (${id})`);
 
-exports.disruptionFormatter = body =>
-  body.map(({ description }) => {
-    let arr = description.split(": ");
-    return {
-      line: arr[0],
-      description: arr[1]
-    };
-  });
+exports.disruptionFormatter = (args, body) =>
+  body.map(({ description }) =>
+    disruptionModeFormatter[args]
+      ? disruptionModeFormatter[args](description.split(": "))
+      : description
+  );
 
 const specialNamesFormatting = {
   tflrail: "TfL Rail",
   dlr: "DLR"
+};
+
+const disruptionModeFormatter = {
+  bus: body =>
+    body.length > 1
+      ? {
+          road: body[0],
+          description: body[1]
+        }
+      : { description: body[0] },
+  tube: body => ({ line: body[0], description: body[1] })
 };

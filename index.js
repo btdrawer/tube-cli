@@ -1,11 +1,11 @@
-const requests = require("./requests");
-const argv = require("yargs").usage(
+const usage =
   "Usage:\n\
 -m List available modes\n\
 -m [str] Status updates for a specified mode\n\
 -l [str] Status updates for specified lines\n\
--d Disruptions (use in conjunction with -m or -l)"
-).argv;
+-d Disruptions (use in conjunction with -m or -l)";
+const requests = require("./requests");
+const argv = require("yargs").usage(usage).argv;
 require("dotenv").config();
 
 const handler = (
@@ -18,7 +18,11 @@ const handler = (
   if (disruptionArg) {
     requests[disruptionFunc](mainArg);
   } else if (typeof mainArg !== "string" && typeof mainArg !== "number") {
-    requests[defaultFunc]();
+    try {
+      requests[defaultFunc]();
+    } catch (err) {
+      console.log(usage);
+    }
   } else {
     requests[otherFunc](mainArg);
   }
