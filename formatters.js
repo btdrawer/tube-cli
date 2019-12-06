@@ -14,8 +14,15 @@ exports.disruptionFormatter = (args, body) =>
   body.map(({ description }) =>
     disruptionModeFormatter[args]
       ? disruptionModeFormatter[args](description.split(": "))
-      : description
+      : `\n${description}\n`
   );
+
+exports.stopsFormatter = body =>
+  body.matches.map(({ id, name, modes, zone }) => {
+    let obj = { id, name, modes };
+    if (zone) obj.zone = zone;
+    return obj;
+  });
 
 const specialNamesFormatting = {
   tflrail: "TfL Rail",

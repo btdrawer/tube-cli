@@ -8,28 +8,12 @@ const requests = require("./requests");
 const argv = require("yargs").usage(usage).argv;
 require("dotenv").config();
 
-const handler = (
-  mainArg,
-  defaultFunc,
-  otherFunc,
-  disruptionArg,
-  disruptionFunc
-) => {
-  if (disruptionArg) {
-    requests[disruptionFunc](mainArg);
-  } else if (typeof mainArg !== "string" && typeof mainArg !== "number") {
-    try {
-      requests[defaultFunc]();
-    } catch (err) {
-      console.log(usage);
-    }
-  } else {
-    requests[otherFunc](mainArg);
-  }
-};
-
-if (argv.m) {
-  handler(argv.m, "getModes", "getModeStatus", argv.d, "getModeDisruptions");
+if (argv.s) {
+  argv.m ? requests.getStopsForSpecificMode(argv) : requests.getStops(argv.s);
+} else if (argv.m) {
+  argv.d ? requests.getModeDisruptions(argv.m) : requests.getModes(argv.m);
 } else if (argv.l) {
-  handler(argv.l, null, "getLineStatuses", argv.d, "getLineDisruptions");
+  argv.d
+    ? requests.getLineDisruptions(argv.l)
+    : requests.getLineStatuses(argv.m);
 }
