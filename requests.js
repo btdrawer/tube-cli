@@ -1,19 +1,21 @@
 const request = require("request");
+const {
+  listFormatter,
+  disruptionFormatter,
+  modesFormatter,
+  getStopsFormatter,
+  searchStopsFormatter
+} = require("./formatters");
+
 const urlConstructor = (uri, params) => {
   let url = `https://api.tfl.gov.uk${uri}?app_id=${process.env.app_id}&app_key=${process.env.app_key}`;
   if (params) {
     Object.keys(params).forEach(key => {
-      url += `&${key}=${params[key]}`;
+      if (params[key]) url += `&${key}=${params[key]}`;
     });
   }
   return url;
 };
-const {
-  formatNames,
-  listFormatter,
-  disruptionFormatter,
-  stopsFormatter
-} = require("./formatters");
 
 const sendRequest = (uri, params, formatter, isEmptyString) =>
   request(urlConstructor(uri, params), (err, res, body) => {
@@ -30,13 +32,10 @@ exports.getModeDisruptions = args =>
     `/Line/Mode/${args}/Disruption`,
     null,
     body => disruptionFormatter(args, body),
-    "There is currently a good service for the specified parameters."
+    disruptionEmptyString
   );
 
-exports.getModes = () =>
-  sendRequest("/Line/Meta/Modes", null, body =>
-    body.map(({ modeName }) => `${formatNames(modeName)} (${modeName})`)
-  );
+exports.getModes = () => sendRequest("/Line/Meta/Modes", null, modesFormatter);
 
 exports.getModeStatus = args =>
   sendRequest(`/Line/Mode/${args}`, null, listFormatter);
@@ -46,17 +45,24 @@ exports.getLineDisruptions = args =>
     `/Line/${args}/Disruption`,
     null,
     body => disruptionFormatter(args, body),
-    "There is currently a good service for the specified parameters."
+    disruptionEmptyString
   );
 
 exports.getLines = args => sendRequest(`/Line/${args}`, null, listFormatter);
 
 exports.getStops = args =>
-  sendRequest("/StopPoint/Search", { query: args }, stopsFormatter);
+  sendRequest(
+    `/StopPoint/${args.s}`,
+    { includeCrowdingData: args.c },
+    getStopsFormatter
+  );
 
-exports.getStopsForSpecificMode = args =>
+exports.searchStops = args =>
   sendRequest(
     "/StopPoint/Search",
-    { query: args.s, modes: args.m },
-    stopsFormatter
+    { query: args.q, modes: args.m },
+    searchStopsFormatter
   );
+
+const disruptionEmptyString =
+  "There is currently a good service for the specified parameters.";

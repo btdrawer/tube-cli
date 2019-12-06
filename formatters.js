@@ -1,4 +1,4 @@
-exports.formatNames = name => {
+const formatNames = name => {
   let words = name.split("-");
   words = words.map(word =>
     specialNamesFormatting[word]
@@ -17,7 +17,18 @@ exports.disruptionFormatter = (args, body) =>
       : `\n${description}\n`
   );
 
-exports.stopsFormatter = body =>
+exports.modesFormatter = body =>
+  body.map(({ modeName }) => `${formatNames(modeName)} (${modeName})`);
+
+exports.getStopsFormatter = body =>
+  body.children.map(({ id, commonName, modes, lines }) => ({
+    id,
+    name: commonName,
+    modes,
+    lines: this.listFormatter(lines)
+  }));
+
+exports.searchStopsFormatter = body =>
   body.matches.map(({ id, name, modes, zone }) => {
     let obj = { id, name, modes };
     if (zone) obj.zone = zone;
