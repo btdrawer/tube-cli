@@ -21,6 +21,7 @@ const sendRequest = (uri, params, formatter, isEmptyString) =>
   request(urlConstructor(uri, params), (err, res, body) => {
     if (err) throw err;
     else if (body.length > 2) {
+      console.log(JSON.parse(body));
       formatter(JSON.parse(body)).forEach(item => console.log(item));
     } else {
       console.log(isEmptyString);
@@ -51,11 +52,7 @@ exports.getLineDisruptions = args =>
 exports.getLines = args => sendRequest(`/Line/${args}`, null, listFormatter);
 
 exports.getStops = args =>
-  sendRequest(
-    `/StopPoint/${args.s}`,
-    { includeCrowdingData: args.c },
-    getStopsFormatter
-  );
+  sendRequest(`/StopPoint/${args.s}`, null, getStopsFormatter);
 
 exports.searchStops = args =>
   sendRequest(

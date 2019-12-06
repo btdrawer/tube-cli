@@ -1,13 +1,3 @@
-const formatNames = name => {
-  let words = name.split("-");
-  words = words.map(word =>
-    specialNamesFormatting[word]
-      ? specialNamesFormatting[word]
-      : `${word.charAt(0).toUpperCase()}${word.substring(1, word.length)}`
-  );
-  return words.join(" ");
-};
-
 exports.listFormatter = body => body.map(({ id, name }) => `${name} (${id})`);
 
 exports.disruptionFormatter = (args, body) =>
@@ -34,6 +24,16 @@ exports.searchStopsFormatter = body =>
     if (zone) obj.zone = zone;
     return obj;
   });
+
+const formatNames = name => {
+  let words = name.split("-");
+  words = words.map(word =>
+    specialNamesFormatting[word]
+      ? specialNamesFormatting[word]
+      : `${word.charAt(0).toUpperCase()}${word.substring(1, word.length)}`
+  );
+  return words.join(" ");
+};
 
 const specialNamesFormatting = {
   tflrail: "TfL Rail",
