@@ -2,7 +2,13 @@
 
 A simple command-line interface for retrieving real-time service information from Transport for London (TfL).
 
+## Setup
+
+You must have NPM installed and run `npm i` before launching the application.
+
 ## Usage
+
+To launch the application, run `node .` from the root folder, followed by one of the following commands:
 
 - `-m`: List available modes
 - `-m [string]`: List status updates for a specified mode (the string should be in kebab-case, e.g. `tube`, `national-rail`)
