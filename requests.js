@@ -1,4 +1,4 @@
-const request = require("request");
+const axios = require("axios");
 const {
   listFormatter,
   disruptionFormatter,
@@ -18,15 +18,10 @@ const urlConstructor = (uri, params) => {
 };
 
 const sendRequest = (uri, params, formatter, isEmptyString) =>
-  request(urlConstructor(uri, params), (err, res, body) => {
-    if (err) throw err;
-    else if (body.length > 2) {
-      console.log(JSON.parse(body));
-      formatter(JSON.parse(body)).forEach(item => console.log(item));
-    } else {
-      console.log(isEmptyString);
-    }
-  });
+  axios
+    .get(urlConstructor(uri, params))
+    .then(({ data }) => formatter(data).forEach(item => console.log(item)))
+    .catch(() => console.log(isEmptyString));
 
 exports.getModeDisruptions = args =>
   sendRequest(
@@ -38,7 +33,7 @@ exports.getModeDisruptions = args =>
 
 exports.getModes = () => sendRequest("/Line/Meta/Modes", null, modesFormatter);
 
-exports.getModeStatus = args =>
+exports.getModeLines = args =>
   sendRequest(`/Line/Mode/${args}`, null, listFormatter);
 
 exports.getLineDisruptions = args =>
