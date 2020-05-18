@@ -1,11 +1,8 @@
 {
     "name": "tube-cli",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "A command-line interface for the Transport for London API.",
     "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
     "author": "Ben Drawer",
     "license": "ISC",
     "dependencies": {
