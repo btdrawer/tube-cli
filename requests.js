@@ -7,7 +7,7 @@ const {
     searchStopsFormatter
 } = require("./formatters");
 
-const urlConstructor = (uri, params) => {
+const buildUrl = (uri, params) => {
     let url = `https://api.tfl.gov.uk${uri}?app_id=${process.env.app_id}&app_key=${process.env.app_key}`;
     if (params) {
         Object.keys(params).forEach(key => {
@@ -19,9 +19,12 @@ const urlConstructor = (uri, params) => {
 
 const sendRequest = (uri, params, formatter, isEmptyString) =>
     axios
-        .get(urlConstructor(uri, params))
+        .get(buildUrl(uri, params))
         .then(({ data }) => formatter(data).forEach(item => console.log(item)))
         .catch(() => console.log(isEmptyString));
+
+const disruptionEmptyString =
+    "There is currently a good service for the specified parameters.";
 
 exports.getModeDisruptions = args =>
     sendRequest(
@@ -55,6 +58,3 @@ exports.searchStops = ({ stops, modes }) =>
         { query: stops, modes },
         searchStopsFormatter
     );
-
-const disruptionEmptyString =
-    "There is currently a good service for the specified parameters.";

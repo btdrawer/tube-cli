@@ -1,3 +1,32 @@
+const formatNames = name =>
+    name
+        .split("-")
+        .map(
+            word =>
+                specialNamesFormatting[word] ||
+                `${word.charAt(0).toUpperCase()}${word.substring(
+                    1,
+                    word.length
+                )}`
+        )
+        .join(" ");
+
+const specialNamesFormatting = {
+    tflrail: "TfL Rail",
+    dlr: "DLR"
+};
+
+const disruptionModeFormatter = {
+    bus: body =>
+        body.length > 1
+            ? {
+                  road: body[0],
+                  description: body[1]
+              }
+            : { description: body[0] },
+    tube: body => ({ line: body[0], description: body[1] })
+};
+
 exports.listFormatter = body => body.map(({ id, name }) => `${name} (${id})`);
 
 exports.disruptionFormatter = (args, body) =>
@@ -19,34 +48,6 @@ exports.getStopsFormatter = body =>
     }));
 
 exports.searchStopsFormatter = body =>
-    body.matches.map(({ id, name, modes, zone }) => {
-        let obj = { id, name, modes };
-        if (zone) obj.zone = zone;
-        return obj;
-    });
-
-const formatNames = name => {
-    let words = name.split("-");
-    words = words.map(word =>
-        specialNamesFormatting[word]
-            ? specialNamesFormatting[word]
-            : `${word.charAt(0).toUpperCase()}${word.substring(1, word.length)}`
+    body.matches.map(({ id, name, modes, zone }) =>
+        zone ? { id, name, modes, zone } : { id, name, modes }
     );
-    return words.join(" ");
-};
-
-const specialNamesFormatting = {
-    tflrail: "TfL Rail",
-    dlr: "DLR"
-};
-
-const disruptionModeFormatter = {
-    bus: body =>
-        body.length > 1
-            ? {
-                  road: body[0],
-                  description: body[1]
-              }
-            : { description: body[0] },
-    tube: body => ({ line: body[0], description: body[1] })
-};
