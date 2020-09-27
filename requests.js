@@ -7,19 +7,15 @@ const {
     searchStopsFormatter
 } = require("./formatters");
 
-const buildUrl = (uri, params) => {
-    let url = `https://api.tfl.gov.uk${uri}?app_id=${process.env.app_id}&app_key=${process.env.app_key}`;
-    if (params) {
-        Object.keys(params).forEach(key => {
-            if (params[key]) url += `&${key}=${params[key]}`;
-        });
-    }
-    return url;
-};
-
 const sendRequest = (uri, params, formatter, isEmptyString) =>
     axios
-        .get(buildUrl(uri, params))
+        .get(`https://api.tfl.gov.uk${uri}`, {
+            params: {
+                app_id: process.env.app_id,
+                app_key: process.env.app_key,
+                ...params
+            }
+        })
         .then(({ data }) => formatter(data).forEach(item => console.log(item)))
         .catch(() => console.log(isEmptyString));
 
