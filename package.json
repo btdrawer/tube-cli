@@ -3,11 +3,14 @@
     "version": "2.0.0",
     "description": "A command-line interface for the Transport for London API.",
     "main": "index.js",
+    "bin": {
+        "tube-cli": "index.js"
+    },
     "author": "Ben Drawer",
     "license": "ISC",
     "dependencies": {
-        "axios": "^0.19.2",
-        "yargs": "^15.0.2"
+        "axios": "^0.21.1",
+        "yargs": "^16.2.0"
     },
     "devDependencies": {
         "dotenv": "^8.2.0",

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const requests = require("./requests");
 const argv = require("yargs");
 require("dotenv").config();
